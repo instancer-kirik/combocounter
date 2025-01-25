@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <stdio.h>
 #include "clay.h"
 #include "clay_types.h"
 #include "clay_renderer_raylib.h"
@@ -14,7 +15,7 @@
 #define SCREEN_HEIGHT 720
 
 void HandleClayErrors(Clay_ErrorData errorData) {
-    printf("Clay Error: %s\n", errorData.message.chars);
+    printf("Clay Error: %s\n", errorData.errorText.chars);
 }
 
 int main(void) {
@@ -23,9 +24,10 @@ int main(void) {
     SetTargetFPS(60);
     
     // Initialize Clay
-    Clay_SetErrorHandler((Clay_ErrorHandler){
+    Clay_ErrorHandler errorHandler = {
         .errorHandlerFunction = HandleClayErrors
-    });
+    };
+    Clay_SetErrorHandler(errorHandler);
     Clay_BeginFrame();
     
     // Initialize UI
