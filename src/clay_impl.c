@@ -44,8 +44,7 @@ void Initialize_ComboCounter(Clay_Arena arena, Clay_Dimensions layoutDimensions,
     // Set higher element counts before initialization
     Clay_SetMaxElementCount(16384);  // Doubled from 8192
     Clay_SetMaxMeasureTextCacheWordCount(16384);  // Increased to match
-    uncti
-    // Set the text measurement functiunction
+    // Set the text measurement function
     Clay_SetMeasureTextFunction(Clay_MeasureText);
     
     // Initialize Clay with our settings
