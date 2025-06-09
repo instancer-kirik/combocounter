@@ -15,7 +15,7 @@
 #include "clay_renderer_raylib.h"
 
 // Text measurement function for Clay
-static Clay_Dimensions MeasureText(Clay_String* text, Clay_TextElementConfig* config) {
+static Clay_Dimensions Clay_MeasureText(Clay_String* text, Clay_TextElementConfig* config) {
     Vector2 size = MeasureTextEx(GetFontDefault(), text->chars, config->fontSize, 1);
     return (Clay_Dimensions){
         .width = size.x,
@@ -44,9 +44,9 @@ void Initialize_ComboCounter(Clay_Arena arena, Clay_Dimensions layoutDimensions,
     // Set higher element counts before initialization
     Clay_SetMaxElementCount(16384);  // Doubled from 8192
     Clay_SetMaxMeasureTextCacheWordCount(16384);  // Increased to match
-    
-    // Set the text measurement function
-    Clay_SetMeasureTextFunction(MeasureText);
+    uncti
+    // Set the text measurement functiunction
+    Clay_SetMeasureTextFunction(Clay_MeasureText);
     
     // Initialize Clay with our settings
     Clay_Initialize(arena, layoutDimensions, errorHandler);

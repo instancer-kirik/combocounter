@@ -1,0 +1,65 @@
+# Makefile for ComboCounter Simulation
+# Builds a native executable that simulates the embedded device
+
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99 -g -O2
+LDFLAGS = -lm
+
+# Source files
+SOURCES = simulation_main.c simple_combo_core.c
+OBJECTS = $(SOURCES:.c=.o)
+TARGET = combocounter_sim
+
+# Default target
+all: $(TARGET)
+
+# Build the simulation executable
+$(TARGET): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+	@echo ""
+	@echo "Build complete! Run with: ./$(TARGET)"
+	@echo ""
+	@echo "Controls:"
+	@echo "  W/S       - Switch between counters"
+	@echo "  SPACE     - Increment counter (good quality)"
+	@echo "  X         - Decrement counter"
+	@echo "  P         - Perfect quality increment"
+	@echo "  G         - Good quality increment" 
+	@echo "  B         - Partial quality increment"
+	@echo "  M         - Miss (breaks combo)"
+	@echo "  H         - Settings menu"
+	@echo "  I         - Statistics screen"
+	@echo "  Q/ESC     - Quit"
+	@echo ""
+
+# Compile source files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean build files
+clean:
+	rm -f $(OBJECTS) $(TARGET) combocounter_save.dat
+	@echo "Clean complete"
+
+# Run the simulation
+run: $(TARGET)
+	./$(TARGET)
+
+# Debug build
+debug: CFLAGS += -DDEBUG -g3
+debug: $(TARGET)
+
+# Install dependencies (if needed)
+deps:
+	@echo "No external dependencies required for simulation"
+
+# Show help
+help:
+	@echo "Available targets:"
+	@echo "  all      - Build the simulation (default)"
+	@echo "  clean    - Remove build files and save data"
+	@echo "  run      - Build and run the simulation"
+	@echo "  debug    - Build with debug symbols"
+	@echo "  help     - Show this help"
+
+.PHONY: all clean run debug deps help
