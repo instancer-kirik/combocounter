@@ -1,0 +1,12 @@
+.{
+    .name = .combo_counter,
+    .version = "0.1.0",
+    .fingerprint = 0xfb4be800ec27d2d7,
+
+    .paths = .{
+        "src",
+        "build.zig",
+        "build.zig.zon",
+        "README.md",
+    },
+}

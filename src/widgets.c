@@ -91,9 +91,9 @@ void widget_break_menu(BreakMenu* menu, ComboUI* ui) {
     }
 }
 
-void widget_objective_progress(ComboState* tracker, Clay_Color objective_color, Clay_Color completed_color, Clay_Color paused_color) {
+void widget_objective_progress(ComboState* tracker, int index, Clay_Color objective_color, Clay_Color completed_color, Clay_Color paused_color) {
     CLAY(
-        CLAY_ID("objective_progress"),
+        CLAY_IDI("objective_progress", index),
         CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
             .layoutDirection = CLAY_LEFT_TO_RIGHT,
             .sizing = CLAY__INIT(Clay_Sizing) {
@@ -106,7 +106,7 @@ void widget_objective_progress(ComboState* tracker, Clay_Color objective_color, 
     ) {
         // Progress bar background
         CLAY(
-            CLAY_ID("progress_bg"),
+            CLAY_ID("obj_progress_bg"),
             CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                 .sizing = CLAY__INIT(Clay_Sizing) {
                     .width = CLAY_SIZING_FIXED(260),
@@ -121,7 +121,7 @@ void widget_objective_progress(ComboState* tracker, Clay_Color objective_color, 
             float progress = tracker->objectives[tracker->active_objective_index].current_score / 
                            (float)tracker->objectives[tracker->active_objective_index].target_score;
             CLAY(
-                CLAY_ID("progress_fill"),
+                CLAY_ID("obj_progress_fill"),
                 CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                     .sizing = CLAY__INIT(Clay_Sizing) {
                         .width = CLAY_SIZING_FIXED(260 * progress),
@@ -136,11 +136,11 @@ void widget_objective_progress(ComboState* tracker, Clay_Color objective_color, 
     }
 }
 
-void widget_interval_tracker(IntervalTracker* intervals, Clay_Color active_color, Clay_Color paused_color) {
+void widget_interval_tracker(IntervalTracker* intervals, int index, Clay_Color active_color, Clay_Color paused_color) {
     if (!intervals->interval_active || intervals->current_interval_index >= intervals->interval_count) return;
 
     CLAY(
-        CLAY_ID("interval_tracker"),
+        CLAY_IDI("interval_tracker", index),
         CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
             .layoutDirection = CLAY_TOP_TO_BOTTOM,
             .sizing = CLAY__INIT(Clay_Sizing) {
@@ -181,8 +181,11 @@ void widget_interval_tracker(IntervalTracker* intervals, Clay_Color active_color
 }
 
 void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color, Clay_Color paused_color, Clay_Color perfect_color) {
+    char id_buffer[64];
+    
+    snprintf(id_buffer, sizeof(id_buffer), "tracker_card_%d", index);
     CLAY(
-        CLAY_IDI("tracker_card", index),
+        CLAY_ID(id_buffer),
         CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
             .layoutDirection = CLAY_TOP_TO_BOTTOM,
             .sizing = CLAY__INIT(Clay_Sizing) {
@@ -197,8 +200,9 @@ void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color
         })
     ) {
         // Header with label and score
+        snprintf(id_buffer, sizeof(id_buffer), "tracker_header_%d", index);
         CLAY(
-            CLAY_ID("header"),
+            CLAY_ID(id_buffer),
             CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                 .layoutDirection = CLAY_LEFT_TO_RIGHT,
                 .sizing = CLAY__INIT(Clay_Sizing) {
@@ -208,6 +212,7 @@ void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color
                 .childGap = 8
             })
         ) {
+            snprintf(id_buffer, sizeof(id_buffer), "tracker_label_%d", index);
             CLAY_TEXT(
                 make_clay_string(tracker->label),
                 CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
@@ -216,6 +221,7 @@ void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color
                 })
             );
 
+            snprintf(id_buffer, sizeof(id_buffer), "tracker_score_%d", index);
             char score_text[32];
             snprintf(score_text, sizeof(score_text), "%d", tracker->score);
             CLAY_TEXT(
@@ -229,18 +235,20 @@ void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color
         }
 
         // Objective progress
-        widget_objective_progress(tracker, active_color, perfect_color, paused_color);
+        snprintf(id_buffer, sizeof(id_buffer), "obj_progress_%d", index);
+        widget_objective_progress(tracker, index, active_color, perfect_color, paused_color);
 
         // Interval tracker if active
         if (tracker->interval_tracker.has_interval) {
-            widget_interval_tracker(&tracker->interval_tracker, active_color, paused_color);
+            snprintf(id_buffer, sizeof(id_buffer), "interval_tracker_%d", index);
+            widget_interval_tracker(&tracker->interval_tracker, index, active_color, paused_color);
         }
     }
 }
 
-void widget_controls_panel(Clay_Color active_color, Clay_Color paused_color, Clay_Color break_color) {
+void widget_controls_panel(int index, Clay_Color active_color, Clay_Color paused_color, Clay_Color break_color) {
     CLAY(
-        CLAY_ID("controls_panel"),
+        CLAY_IDI("controls_panel", index),
         CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
             .layoutDirection = CLAY_TOP_TO_BOTTOM,
             .sizing = CLAY__INIT(Clay_Sizing) {
@@ -253,7 +261,7 @@ void widget_controls_panel(Clay_Color active_color, Clay_Color paused_color, Cla
     ) {
         // Add tracker button
         CLAY(
-            CLAY_ID("add_tracker"),
+            CLAY_ID("add_tracker_btn"),
             CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                 .sizing = CLAY__INIT(Clay_Sizing) {
                     .width = CLAY_SIZING_FIXED(280),
@@ -261,7 +269,7 @@ void widget_controls_panel(Clay_Color active_color, Clay_Color paused_color, Cla
                 }
             }),
             CLAY_RECTANGLE(CLAY__INIT(Clay_RectangleElementConfig) {
-                .color = active_color
+                .color = Clay_Hovered() ? active_color : paused_color
             })
         ) {
             CLAY_TEXT(
@@ -275,7 +283,7 @@ void widget_controls_panel(Clay_Color active_color, Clay_Color paused_color, Cla
 
         // Add interval button
         CLAY(
-            CLAY_ID("add_interval"),
+            CLAY_ID("add_interval_btn"),
             CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                 .sizing = CLAY__INIT(Clay_Sizing) {
                     .width = CLAY_SIZING_FIXED(280),
@@ -283,7 +291,7 @@ void widget_controls_panel(Clay_Color active_color, Clay_Color paused_color, Cla
                 }
             }),
             CLAY_RECTANGLE(CLAY__INIT(Clay_RectangleElementConfig) {
-                .color = active_color
+                .color = Clay_Hovered() ? active_color : paused_color
             })
         ) {
             CLAY_TEXT(
@@ -297,7 +305,7 @@ void widget_controls_panel(Clay_Color active_color, Clay_Color paused_color, Cla
 
         // Take break button
         CLAY(
-            CLAY_ID("take_break"),
+            CLAY_ID("take_break_btn"),
             CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                 .sizing = CLAY__INIT(Clay_Sizing) {
                     .width = CLAY_SIZING_FIXED(280),
@@ -305,7 +313,7 @@ void widget_controls_panel(Clay_Color active_color, Clay_Color paused_color, Cla
                 }
             }),
             CLAY_RECTANGLE(CLAY__INIT(Clay_RectangleElementConfig) {
-                .color = break_color
+                .color = Clay_Hovered() ? break_color : paused_color
             })
         ) {
             CLAY_TEXT(

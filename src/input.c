@@ -1,8 +1,10 @@
 #include "input.h"
 #include "raylib.h"
+#include "ui.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 void handle_tracker_form_input(TrackerForm* form, int key) {
     if (!form->form_visible) return;
@@ -66,27 +68,51 @@ void handle_click(Clay_ElementId elementId, Clay_PointerData pointerData, intptr
     if (pointerData.state != CLAY_POINTER_DATA_PRESSED_THIS_FRAME) return;
     
     ComboUI* ui = (ComboUI*)userData;
-    const char* id = elementId.stringId.chars;
-    
-    if (strcmp(id, "add_tracker_button") == 0) {
+    if (!elementId.id) return;  // No element was clicked
+
+    // Get the element ID string
+    Clay_String id = elementId.stringId;
+    if (!id.chars) return;
+
+    // Compare element IDs
+    if (strncmp(id.chars, "tracker_form_submit", id.length) == 0) {
+        printf("Add tracker clicked\n");  // Debug print
+        add_new_tracker(ui);
+    }
+    else if (strncmp(id.chars, "interval_form_submit", id.length) == 0) {
+        printf("Add interval clicked\n");  // Debug print
+        add_new_interval(ui);
+    }
+    else if (strncmp(id.chars, "tracker_form_cancel", id.length) == 0 ||
+             strncmp(id.chars, "interval_form_cancel", id.length) == 0) {
+        printf("Cancel clicked\n");  // Debug print
+        ui->tracker_form.form_visible = false;
+        ui->interval_form.form_visible = false;
+        ui->break_menu.visible = false;
+    }
+    else if (strncmp(id.chars, "add_tracker_btn", id.length) == 0) {
+        printf("Add tracker button clicked\n");  // Debug print
         ui->tracker_form.form_visible = true;
+        ui->interval_form.form_visible = false;
+        ui->break_menu.visible = false;
         ui->tracker_form.error_visible = false;
         memset(ui->tracker_form.label_buffer, 0, MAX_LABEL_LENGTH);
     }
-    else if (strcmp(id, "add_interval_button") == 0) {
+    else if (strncmp(id.chars, "add_interval_btn", id.length) == 0) {
+        printf("Add interval button clicked\n");  // Debug print
         ui->interval_form.form_visible = true;
+        ui->tracker_form.form_visible = false;
+        ui->break_menu.visible = false;
         ui->interval_form.error_visible = false;
+        memset(ui->interval_form.label_buffer, 0, MAX_LABEL_LENGTH);
         memset(ui->interval_form.duration_buffer, 0, sizeof(ui->interval_form.duration_buffer));
         memset(ui->interval_form.reps_buffer, 0, sizeof(ui->interval_form.reps_buffer));
-        memset(ui->interval_form.label_buffer, 0, MAX_LABEL_LENGTH);
     }
-    else if (strcmp(id, "cancel_tracker_button") == 0) {
+    else if (strncmp(id.chars, "take_break_btn", id.length) == 0) {
+        printf("Take break clicked\n");  // Debug print
+        ui->break_menu.visible = true;
         ui->tracker_form.form_visible = false;
-        ui->tracker_form.error_visible = false;
-    }
-    else if (strcmp(id, "cancel_interval_button") == 0) {
         ui->interval_form.form_visible = false;
-        ui->interval_form.error_visible = false;
     }
 }
 

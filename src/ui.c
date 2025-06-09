@@ -62,7 +62,7 @@ Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
 
     // Main UI layout
     CLAY(
-        CLAY_ID("main_container"),
+        CLAY_IDI("main_ui_container", 0),
         CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
             .layoutDirection = CLAY_LEFT_TO_RIGHT,
             .sizing = CLAY__INIT(Clay_Sizing) {
@@ -73,7 +73,7 @@ Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
     ) {
         // Left panel - trackers
         CLAY(
-            CLAY_ID("trackers_panel"),
+            CLAY_IDI("trackers_panel_container", 0),
             CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                 .layoutDirection = CLAY_TOP_TO_BOTTOM,
                 .sizing = CLAY__INIT(Clay_Sizing) {
@@ -83,15 +83,18 @@ Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
             })
         ) {
             // Header
-            CLAY_TEXT(
-                CLAY_STRING("Trackers"),
-                CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
-                    .textColor = COLOR_ACTIVE,
-                    .fontSize = 24
-                })
+            CLAY(
+                CLAY_IDI("trackers_header", 0),
+                CLAY_TEXT(
+                    CLAY_STRING("Trackers"),
+                    CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
+                        .textColor = COLOR_ACTIVE,
+                        .fontSize = 24
+                    })
+                )
             );
 
-            // Render tracker cards
+            // Render tracker cards with unique indices
             for (int i = 0; i < ui->tracker_count; i++) {
                 widget_tracker_card(&ui->trackers[i], i, ui->active_color, ui->paused_color, ui->perfect_color);
             }
@@ -99,7 +102,7 @@ Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
 
         // Right panel - controls
         CLAY(
-            CLAY_ID("controls_panel"),
+            CLAY_IDI("controls_panel_container", 0),
             CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
                 .layoutDirection = CLAY_TOP_TO_BOTTOM,
                 .sizing = CLAY__INIT(Clay_Sizing) {
@@ -109,15 +112,18 @@ Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
             })
         ) {
             // Header
-            CLAY_TEXT(
-                CLAY_STRING("Controls"),
-                CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
-                    .textColor = COLOR_ACTIVE,
-                    .fontSize = 24
-                })
+            CLAY(
+                CLAY_IDI("controls_header", 0),
+                CLAY_TEXT(
+                    CLAY_STRING("Controls"),
+                    CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
+                        .textColor = COLOR_ACTIVE,
+                        .fontSize = 24
+                    })
+                )
             );
 
-            widget_controls_panel(ui->active_color, ui->paused_color, ui->break_color);
+            widget_controls_panel(0, ui->active_color, ui->paused_color, ui->break_color);
         }
     }
 

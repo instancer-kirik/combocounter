@@ -14,7 +14,7 @@ Alternative names: Combometer, ComboTracker, Combotroc, Combotron, Comboraptor
    - Cache-friendly data structures?
    - Predictable, consistent timing?
    - Minimal dependencies?
-   - Written in C, Clay, compiled to WASM
+   - Written in Zig, with optional WASM target
   
 2. **Usability** 
    - Simple, clear API
@@ -30,18 +30,19 @@ Alternative names: Combometer, ComboTracker, Combotroc, Combotron, Comboraptor
 ## Core Systems
 
 ### Combo Tracking
-```
-c:Comboc/design_doc.md
-typedef struct {
-uint32_t score; // Current total score
-uint32_t combo; // Current combo count
-float multiplier; // Current score multiplier
-float decay_pause; // Time to pause decay when unfocused
-float last_hit; // Timestamp of last increment
-char* label; // User defined tracker name
-bool paused; // Pause state for bg tracking
-// ... stats tracking
-} ComboState;
+```zig
+pub const ComboState = struct {
+    label: [64]u8,
+    score: i32,
+    combo: i32,
+    max_combo: i32,
+    multiplier: f32,
+    decay_pause: f32,
+    total_hits: u32,
+    perfect_hits: u32,
+    miss_hits: u32,
+    paused: bool,
+};
 ```
 
 Key features:

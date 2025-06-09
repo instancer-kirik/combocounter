@@ -1,14 +1,19 @@
 #include "clay_renderer_raylib.h"
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "clay.h"
 
 void Clay_RenderCommandArray_RenderRaylib(Clay_RenderCommandArray commands) {
+    if (!commands.internalArray || commands.length == 0) return;
+
     for (size_t i = 0; i < commands.length; i++) {
-        Clay_RenderCommand* cmd = Clay_RenderCommandArray_Get(&commands, i);
+        Clay_RenderCommand* cmd = &commands.internalArray[i];
         if (!cmd) continue;
 
         switch (cmd->commandType) {
             case CLAY_RENDER_COMMAND_TYPE_RECTANGLE: {
+                if (!cmd->config.rectangleElementConfig) continue;
                 Color color = clay_to_raylib_color(cmd->config.rectangleElementConfig->color);
                 DrawRectangle(
                     (int)cmd->boundingBox.x,
@@ -21,6 +26,7 @@ void Clay_RenderCommandArray_RenderRaylib(Clay_RenderCommandArray commands) {
             }
 
             case CLAY_RENDER_COMMAND_TYPE_TEXT: {
+                if (!cmd->config.textElementConfig || !cmd->text.chars) continue;
                 Color color = clay_to_raylib_color(cmd->config.textElementConfig->textColor);
                 DrawText(
                     cmd->text.chars,
@@ -86,26 +92,31 @@ static Texture2D* get_or_load_texture(const char* path) {
     return NULL;
 }
 
+static void Clay_DefaultErrorHandler(Clay_ErrorData error) {
+    printf("Clay Error: %.*s\n", error.errorText.length, error.errorText.chars);
+}
+
 void Clay_Raylib_Initialize(int width, int height, const char* title, unsigned int flags) {
-    SetConfigFlags(flags);
-    InitWindow(width, height, title);
+    // Set up text measurement only - Clay should already be initialized in main.c
+    Clay_SetMeasureTextFunction(Raylib_MeasureText);
+    
+    // Set maximum element count to prevent array overflows
+    Clay_SetMaxElementCount(10000);  // Increased from 1000
+    Clay_SetMaxMeasureTextCacheWordCount(10000);  // Increased from 1000
+    Clay_SetCullingEnabled(true);
 }
 
 Clay_ElementId Clay__GetClickedElement(Clay_RenderCommandArray commands, Clay_PointerData pointer) {
-    Clay_ElementId result = {
-        .id = 0,
-        .offset = 0,
-        .baseId = 0,
-        .stringId = {
-            .chars = NULL,
-            .length = 0
-        }
-    };
+    Clay_ElementId result = {0};
     
+    if (!commands.internalArray || commands.length == 0) {
+        return result;
+    }
+
     // Iterate through commands in reverse order (top-most elements first)
     for (int i = commands.length - 1; i >= 0; i--) {
-        Clay_RenderCommand* cmd = Clay_RenderCommandArray_Get(&commands, i);
-        if (!cmd) continue;
+        Clay_RenderCommand* cmd = &commands.internalArray[i];
+        if (!cmd || cmd->commandType != CLAY_RENDER_COMMAND_TYPE_RECTANGLE) continue;
 
         // Check if point is inside bounding box
         if (pointer.position.x >= cmd->boundingBox.x && 
@@ -113,11 +124,9 @@ Clay_ElementId Clay__GetClickedElement(Clay_RenderCommandArray commands, Clay_Po
             pointer.position.y >= cmd->boundingBox.y && 
             pointer.position.y <= cmd->boundingBox.y + cmd->boundingBox.height) {
             
-            // Found a hit, return the command's ID
             result.id = cmd->id;
-            if (cmd->commandType == CLAY_RENDER_COMMAND_TYPE_TEXT && cmd->text.chars) {
-                result.stringId = cmd->text;
-            }
+            // Don't use text for ID since we want to detect rectangle clicks
+            result.stringId = (Clay_String){0};
             return result;
         }
     }
