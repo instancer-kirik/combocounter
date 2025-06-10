@@ -15,6 +15,9 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
+// Global UI context for widget access
+ComboUI* g_ui_context = NULL;
+
 void HandleClayErrors(Clay_ErrorData errorData) {
     printf("Clay Error: %s\n", errorData.errorText.chars);
 }
@@ -24,21 +27,15 @@ int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Combo Counter");
     SetTargetFPS(60);
     
-    // Initialize Clay
-    Clay_ErrorHandler errorHandler = {
-        .errorHandlerFunction = HandleClayErrors,
-        .userData = 0
-    };
-    
-    // Initialize Clay with dimensions
+    // Initialize Clay with proper setup
     Clay_Arena arena = CLAY__INIT(Clay_Arena){
-        .capacity = 64 * 1024 * 1024, // 64MB
+        .capacity = 64 * 1024 * 1024, // 64MB should be enough for complex UI
         .memory = malloc(64 * 1024 * 1024),
         .nextAllocation = 0
     };
 
     if (!arena.memory) {
-        printf("Failed to allocate Clay arena memory\n");
+        printf("Failed to allocate Clay arena memory (64MB)\n");
         CloseWindow();
         return 1;
     }
@@ -47,17 +44,25 @@ int main(void) {
         .width = SCREEN_WIDTH,
         .height = SCREEN_HEIGHT
     };
-    //Clay_Initialize(arena, dimensions, errorHandler);
     
-    // Initialize Clay Raylib renderer
-    //Clay_Raylib_Initialize(SCREEN_WIDTH, SCREEN_HEIGHT, "Combo Counter", 0);
+    // Create proper error handler structure
+    Clay_ErrorHandler errorHandler = {
+        .errorHandlerFunction = HandleClayErrors,
+        .userData = 0
+    };
+    
+    // Initialize Clay properly
     Initialize_ComboCounter(arena, dimensions, errorHandler);
+    
     // Set debug mode to help track issues
     Clay_SetDebugModeEnabled(true);
 
     // Initialize UI after Clay is set up
     ComboUI ui = {0};
     init_ui(&ui);
+    
+    // Set global UI context for widget access
+    g_ui_context = &ui;
     
     // Initialize break activities
     for (int i = 0; i < default_activities_count; i++) {
@@ -70,18 +75,6 @@ int main(void) {
     
     // Main game loop
     while (!WindowShouldClose()) {
-        // Begin new frame
-        Clay_BeginFrame();
-        BeginDrawing();
-        
-        // Clear background
-        ClearBackground((Color){
-            .r = (unsigned char)(COLOR_BG.r * 255),
-            .g = (unsigned char)(COLOR_BG.g * 255),
-            .b = (unsigned char)(COLOR_BG.b * 255),
-            .a = (unsigned char)(COLOR_BG.a * 255)
-        });
-        
         // Update
         float dt = GetFrameTime();
         
@@ -110,6 +103,14 @@ int main(void) {
             key = GetCharPressed();
         }
 
+        // Handle special keys
+        if (IsKeyPressed(KEY_ESCAPE)) {
+            handle_input(&ui, KEY_ESCAPE);
+        }
+        if (IsKeyPressed(KEY_BACKSPACE)) {
+            handle_input(&ui, KEY_BACKSPACE);
+        }
+
         // Global shortcuts
         if (IsKeyDown(KEY_LEFT_CONTROL) || IsKeyDown(KEY_RIGHT_CONTROL)) {
             if (IsKeyPressed(KEY_N)) {
@@ -129,29 +130,29 @@ int main(void) {
             }
         }
 
-        // Generate and render UI
-        Clay_BeginLayout();
-        Clay_RenderCommandArray commands = combo_ui_render(&ui);
-        Clay_EndLayout();
-        
-        // Handle mouse input before rendering
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            Clay_Vector2 mousePos = { GetMouseX(), GetMouseY() };
-            Clay_PointerData pointer = { 
-                .position = mousePos, 
-                .state = CLAY_POINTER_DATA_PRESSED_THIS_FRAME 
-            };
-            Clay_ElementId clicked = Clay__GetClickedElement(commands, pointer);
-            if (clicked.id != 0) {
-                handle_click(clicked, pointer, (intptr_t)&ui);
-            }
-        }
+        // Handle mouse input
+        Clay_Vector2 mousePos = { GetMouseX(), GetMouseY() };
+        bool mousePressed = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+        Clay_SetPointerState(mousePos, mousePressed);
 
+        // Begin rendering
+        BeginDrawing();
+        
+        // Clear background
+        ClearBackground((Color){
+            .r = (unsigned char)(COLOR_BG.r * 255),
+            .g = (unsigned char)(COLOR_BG.g * 255),
+            .b = (unsigned char)(COLOR_BG.b * 255),
+            .a = (unsigned char)(COLOR_BG.a * 255)
+        });
+        
+        // Generate and render UI
+        Clay_RenderCommandArray commands = combo_ui_render(&ui);
+        
         // Render the UI
         Clay_RenderCommandArray_RenderRaylib(commands);
         
         EndDrawing();
-        Clay_EndFrame();
     }
     
     // Cleanup

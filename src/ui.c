@@ -41,6 +41,7 @@ void init_ui(ComboUI* ui) {
 }
 
 Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
+    // Begin Clay layout
     Clay_BeginLayout();
 
     // Render break menu if visible
@@ -88,7 +89,7 @@ Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
                 CLAY_TEXT(
                     CLAY_STRING("Trackers"),
                     CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
-                        .textColor = COLOR_ACTIVE,
+                        .textColor = ui->active_color,
                         .fontSize = 24
                     })
                 )
@@ -117,7 +118,7 @@ Clay_RenderCommandArray combo_ui_render(ComboUI* ui) {
                 CLAY_TEXT(
                     CLAY_STRING("Controls"),
                     CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
-                        .textColor = COLOR_ACTIVE,
+                        .textColor = ui->active_color,
                         .fontSize = 24
                     })
                 )

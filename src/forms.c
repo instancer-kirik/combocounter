@@ -5,6 +5,9 @@ static Clay_String make_clay_string(const char* str) {
     return (Clay_String){ .chars = str, .length = strlen(str) };
 }
 
+// Forward declaration
+extern void handle_click(Clay_ElementId elementId, Clay_PointerData pointerData, intptr_t userData);
+
 void render_tracker_form(TrackerForm* form, ComboUI* ui) {
     if (!form->form_visible) return;
 
@@ -69,7 +72,8 @@ void render_tracker_form(TrackerForm* form, ComboUI* ui) {
                 CLAY_LAYOUT({
                     .sizing = {CLAY_SIZING_FIXED(120), CLAY_SIZING_FIXED(30)}
                 }),
-                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->active_color : ui->paused_color})
+                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->active_color : ui->paused_color}),
+                Clay_OnHover(handle_click, (intptr_t)ui)
             ) {
                 CLAY_TEXT(make_clay_string("Add"), CLAY_TEXT_CONFIG({
                     .fontSize = 16,
@@ -82,7 +86,8 @@ void render_tracker_form(TrackerForm* form, ComboUI* ui) {
                 CLAY_LAYOUT({
                     .sizing = {CLAY_SIZING_FIXED(120), CLAY_SIZING_FIXED(30)}
                 }),
-                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->error_color : ui->paused_color})
+                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->error_color : ui->paused_color}),
+                Clay_OnHover(handle_click, (intptr_t)ui)
             ) {
                 CLAY_TEXT(make_clay_string("Cancel"), CLAY_TEXT_CONFIG({
                     .fontSize = 16,
@@ -200,7 +205,8 @@ void render_interval_form(IntervalForm* form, ComboUI* ui) {
             CLAY(
                 CLAY_ID("interval_form_submit"),
                 CLAY_LAYOUT({.sizing = {CLAY_SIZING_FIXED(120), CLAY_SIZING_FIXED(30)}}),
-                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->active_color : ui->paused_color})
+                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->active_color : ui->paused_color}),
+                Clay_OnHover(handle_click, (intptr_t)ui)
             ) {
                 CLAY_TEXT(make_clay_string("Add"), CLAY_TEXT_CONFIG({
                     .fontSize = 16,
@@ -212,7 +218,8 @@ void render_interval_form(IntervalForm* form, ComboUI* ui) {
             CLAY(
                 CLAY_ID("interval_form_cancel"),
                 CLAY_LAYOUT({.sizing = {CLAY_SIZING_FIXED(120), CLAY_SIZING_FIXED(30)}}),
-                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->error_color : ui->paused_color})
+                CLAY_RECTANGLE({.color = Clay_Hovered() ? ui->error_color : ui->paused_color}),
+                Clay_OnHover(handle_click, (intptr_t)ui)
             ) {
                 CLAY_TEXT(make_clay_string("Cancel"), CLAY_TEXT_CONFIG({
                     .fontSize = 16,

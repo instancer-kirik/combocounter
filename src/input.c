@@ -108,8 +108,8 @@ void handle_click(Clay_ElementId elementId, Clay_PointerData pointerData, intptr
         memset(ui->interval_form.duration_buffer, 0, sizeof(ui->interval_form.duration_buffer));
         memset(ui->interval_form.reps_buffer, 0, sizeof(ui->interval_form.reps_buffer));
     }
-    else if (strncmp(id.chars, "take_break_btn", id.length) == 0) {
-        printf("Take break clicked\n");  // Debug print
+    else if (strncmp(id.chars, "break_menu_btn", id.length) == 0) {
+        printf("Break menu clicked\n");  // Debug print
         ui->break_menu.visible = true;
         ui->tracker_form.form_visible = false;
         ui->interval_form.form_visible = false;
