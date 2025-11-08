@@ -61,6 +61,9 @@ int main(void) {
     ComboUI ui = {0};
     init_ui(&ui);
     
+    // Load saved tracker state
+    load_ui_state(&ui);
+    
     // Set global UI context for widget access
     g_ui_context = &ui;
     
@@ -154,6 +157,9 @@ int main(void) {
         
         EndDrawing();
     }
+    
+    // Save UI state before cleanup
+    save_ui_state(&ui);
     
     // Cleanup
     free(arena.memory);

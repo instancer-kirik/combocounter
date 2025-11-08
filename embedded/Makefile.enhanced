@@ -1,0 +1,89 @@
+# Makefile for Enhanced ComboCounter Simulation
+# Builds a native executable with full audio modes and visual combo meter
+
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c99 -g -O2 -D_GNU_SOURCE
+LDFLAGS = -lm
+
+# Source files
+SOURCES = enhanced_simulation.c simple_combo_core.c turso_local.c
+OBJECTS = $(SOURCES:.c=.o)
+TARGET = combocounter_enhanced
+
+# Default target
+all: $(TARGET)
+
+# Build the enhanced simulation executable
+$(TARGET): $(OBJECTS)
+	$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+	@echo ""
+	@echo "🎉 Enhanced ComboCounter build complete! Run with: ./$(TARGET)"
+	@echo ""
+	@echo "🎮 NEW FEATURES:"
+	@echo "  🔊 Audio Modes: Silent, Beeps, Voice, Music"
+	@echo "  📊 Visual Combo Decay Bar with colors"
+	@echo "  🚀 Multiplier visualization"
+	@echo "  📈 Enhanced statistics tracking"
+	@echo "  🎵 Real-time audio feedback simulation"
+	@echo ""
+	@echo "🎯 CONTROLS:"
+	@echo "  SPACE     - Increment counter (good quality)"
+	@echo "  P/G/B/M   - Perfect/Good/Partial/Miss quality"
+	@echo "  W/S       - Switch between counters"
+	@echo "  A         - Audio settings menu"
+	@echo "  H         - Settings menu"
+	@echo "  I         - Enhanced statistics"
+	@echo "  Q/ESC     - Quit/Back"
+	@echo ""
+
+# Compile source files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Clean build files
+clean:
+	rm -f $(OBJECTS) $(TARGET) combocounter_save.dat
+	@echo "Clean complete"
+
+# Run the enhanced simulation
+run: $(TARGET)
+	./$(TARGET)
+
+# Debug build
+debug: CFLAGS += -DDEBUG -g3
+debug: $(TARGET)
+
+# Install dependencies (if needed)
+deps:
+	@echo "No external dependencies required for enhanced simulation"
+	@echo "Uses standard C libraries: math, time, termios"
+
+# Show help
+help:
+	@echo "🎯 Enhanced ComboCounter Simulation"
+	@echo ""
+	@echo "Available targets:"
+	@echo "  all      - Build the enhanced simulation (default)"
+	@echo "  clean    - Remove build files and save data"
+	@echo "  run      - Build and run the enhanced simulation"
+	@echo "  debug    - Build with debug symbols"
+	@echo "  help     - Show this help"
+	@echo ""
+	@echo "🆕 ENHANCEMENTS:"
+	@echo "  • 4 Audio modes with real-time feedback"
+	@echo "  • Visual combo decay bar with color coding"
+	@echo "  • Multiplier visualization bar"
+	@echo "  • Enhanced quality tracking (Perfect/Good/Partial/Miss)"
+	@echo "  • Real-time combo status (Building/Holding/Decaying/Broken/Record)"
+	@echo "  • Accuracy percentage calculation"
+	@echo "  • Audio settings menu with full configuration"
+	@echo "  • Persistent enhanced statistics"
+	@echo ""
+
+# Test target for validation
+test: $(TARGET)
+	@echo "🧪 Running basic functionality test..."
+	@echo "p g b m q" | timeout 5s ./$(TARGET) || true
+	@echo "✅ Test completed"
+
+.PHONY: all clean run debug deps help test

@@ -220,6 +220,7 @@ void widget_interval_tracker(IntervalTracker* intervals, int index, Clay_Color a
 
 void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color, Clay_Color paused_color, Clay_Color perfect_color) {
     char id_buffer[64];
+    extern ComboUI* g_ui_context;
     
     snprintf(id_buffer, sizeof(id_buffer), "tracker_card_%d", index);
     CLAY(
@@ -228,7 +229,7 @@ void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color
             .layoutDirection = CLAY_TOP_TO_BOTTOM,
             .sizing = CLAY__INIT(Clay_Sizing) {
                 .width = CLAY_SIZING_FIXED(280),
-                .height = CLAY_SIZING_FIXED(120)
+                .height = CLAY_SIZING_FIXED(160)
             },
             .childGap = 8,
             .padding = {8, 8}
@@ -276,6 +277,92 @@ void widget_tracker_card(ComboState* tracker, int index, Clay_Color active_color
                     })
                 )
             );
+        }
+
+        // Buttons row
+        snprintf(id_buffer, sizeof(id_buffer), "tracker_buttons_%d", index);
+        CLAY(
+            CLAY_ID(id_buffer),
+            CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
+                .layoutDirection = CLAY_LEFT_TO_RIGHT,
+                .sizing = CLAY__INIT(Clay_Sizing) {
+                    .width = CLAY_SIZING_FIXED(260),
+                    .height = CLAY_SIZING_FIXED(32)
+                },
+                .childGap = 8
+            })
+        ) {
+            // Increment button
+            snprintf(id_buffer, sizeof(id_buffer), "tracker_increment_%d", index);
+            CLAY(
+                CLAY_ID(id_buffer),
+                CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
+                    .sizing = CLAY__INIT(Clay_Sizing) {
+                        .width = CLAY_SIZING_FIXED(60),
+                        .height = CLAY_SIZING_FIXED(32)
+                    }
+                }),
+                CLAY_RECTANGLE(CLAY__INIT(Clay_RectangleElementConfig) {
+                    .color = Clay_Hovered() ? perfect_color : active_color
+                }),
+                Clay_OnHover(handle_click, (intptr_t)g_ui_context)
+            ) {
+                CLAY_TEXT(
+                    make_clay_string("+"),
+                    CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
+                        .fontSize = 18,
+                        .textColor = (Clay_Color){1, 1, 1, 1}
+                    })
+                );
+            }
+
+            // Decrement button
+            snprintf(id_buffer, sizeof(id_buffer), "tracker_decrement_%d", index);
+            CLAY(
+                CLAY_ID(id_buffer),
+                CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
+                    .sizing = CLAY__INIT(Clay_Sizing) {
+                        .width = CLAY_SIZING_FIXED(60),
+                        .height = CLAY_SIZING_FIXED(32)
+                    }
+                }),
+                CLAY_RECTANGLE(CLAY__INIT(Clay_RectangleElementConfig) {
+                    .color = Clay_Hovered() ? (Clay_Color){0.8f, 0.2f, 0.2f, 1.0f} : paused_color
+                }),
+                Clay_OnHover(handle_click, (intptr_t)g_ui_context)
+            ) {
+                CLAY_TEXT(
+                    make_clay_string("-"),
+                    CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
+                        .fontSize = 18,
+                        .textColor = (Clay_Color){1, 1, 1, 1}
+                    })
+                );
+            }
+
+            // Pause/Resume button
+            snprintf(id_buffer, sizeof(id_buffer), "tracker_pause_%d", index);
+            CLAY(
+                CLAY_ID(id_buffer),
+                CLAY_LAYOUT(CLAY__INIT(Clay_LayoutConfig) {
+                    .sizing = CLAY__INIT(Clay_Sizing) {
+                        .width = CLAY_SIZING_FIXED(120),
+                        .height = CLAY_SIZING_FIXED(32)
+                    }
+                }),
+                CLAY_RECTANGLE(CLAY__INIT(Clay_RectangleElementConfig) {
+                    .color = Clay_Hovered() ? active_color : paused_color
+                }),
+                Clay_OnHover(handle_click, (intptr_t)g_ui_context)
+            ) {
+                CLAY_TEXT(
+                    make_clay_string(tracker->paused ? "Resume" : "Pause"),
+                    CLAY_TEXT_CONFIG(CLAY__INIT(Clay_TextElementConfig) {
+                        .fontSize = 14,
+                        .textColor = (Clay_Color){1, 1, 1, 1}
+                    })
+                );
+            }
         }
 
         // Objective progress

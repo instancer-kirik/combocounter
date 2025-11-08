@@ -113,7 +113,7 @@ int main(void)
 {
     // Initialize logging first
     log_init();
-    NRF_LOG_INFO("ComboCounter Embedded Starting...");
+    NRF_LOG_INFO("Combo Chracker Embedded Starting...");
 
     // Initialize hardware
     hardware_init();
@@ -134,7 +134,7 @@ int main(void)
 
     // Clear display and show startup screen
     epaper_clear(&g_display);
-    epaper_draw_text(&g_display, "ComboCounter", 10, 10, FONT_LARGE, EPAPER_COLOR_BLACK, ALIGN_LEFT);
+    epaper_draw_text(&g_display, "Combo Chracker", 10, 10, FONT_LARGE, EPAPER_COLOR_BLACK, ALIGN_LEFT);
     epaper_draw_text(&g_display, "Starting...", 10, 40, FONT_MEDIUM, EPAPER_COLOR_BLACK, ALIGN_LEFT);
     epaper_update(&g_display, UPDATE_FULL);
     
@@ -147,7 +147,7 @@ int main(void)
     g_last_interaction = app_timer_cnt_get();
     g_display_dirty = true;
 
-    NRF_LOG_INFO("ComboCounter Ready!");
+    NRF_LOG_INFO("Combo Chracker Ready!");
 
     // Main loop
     while (true) {

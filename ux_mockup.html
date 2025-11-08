@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magnetic Barnacle ComboCounter - UX Mockup</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .device-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .barnacle-device {
+            width: 200px;
+            height: 200px;
+            background: #2c2c2c;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .magnet-base {
+            position: absolute;
+            bottom: -15px;
+            width: 160px;
+            height: 30px;
+            background: linear-gradient(to bottom, #666, #333);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .display {
+            width: 140px;
+            height: 100px;
+            background: #000;
+            border: 3px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 10px;
+            line-height: 1.2;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .exercise-name {
+            text-align: center;
+            font-weight: bold;
+            font-size: 9px;
+            margin-bottom: 2px;
+        }
+
+        .rep-counter {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            margin: 3px 0;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #333;
+            border: 1px solid #666;
+        }
+
+        .progress-dot.filled {
+            background: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            margin-top: 2px;
+        }
+
+        .controls {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 300px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .control-section {
+            margin-bottom: 20px;
+        }
+
+        .control-section h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .btn.secondary {
+            background: #2196F3;
+        }
+
+        .btn.secondary:hover {
+            background: #1976D2;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+
+        .slider {
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
+            background: #ddd;
+            outline: none;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+
+        .exercise-list {
+            display: none;
+            background: #000;
+            color: #fff;
+            padding: 10px;
+            font-size: 9px;
+            border-radius: 8px;
+        }
+
+        .exercise-item {
+            padding: 4px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin: 2px 0;
+        }
+
+        .exercise-item:hover {
+            background: #333;
+        }
+
+        .exercise-item.selected {
+            background: #4CAF50;
+        }
+
+        .attachment-demo {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .weight-shapes {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .weight {
+            width: 60px;
+            height: 30px;
+            background: #666;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+            position: relative;
+        }
+
+        .weight:hover {
+            background: #888;
+            transform: scale(1.1);
+        }
+
+        .weight.attached {
+            background: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
+        }
+
+        .kettlebell {
+            width: 40px;
+            height: 40px;
+            background: #444;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .kettlebell::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 16px;
+            background: #444;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .audio-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: #FF9800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .screen-selector {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .screen-btn {
+            padding: 4px 8px;
+            font-size: 10px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .screen-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .feedback-text {
+            font-size: 11px;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 8px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="device-container">
+        <!-- Magnetic Barnacle Device -->
+        <div class="barnacle-device">
+            <div class="display" id="mainDisplay">
+                <div class="exercise-name" id="exerciseName">SQUATS</div>
+                <div class="rep-counter" id="repCounter">15</div>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-dot filled"></div>
+                    <div class="progress-dot filled"></div>
+                    <div class="progress-dot filled"></div>
+                    <div class="progress-dot filled"></div>
+                    <div class="progress-dot filled"></div>
+                    <div class="progress-dot filled"></div>
+                    <div class="progress-dot filled"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                </div>
+                <div class="status-row">
+                    <span>Combo: <span id="comboCount">15</span></span>
+                    <span>⏱️ <span id="workoutTime">2:34</span></span>
+                </div>
+                <div class="stats">
+                    <span>🔊 <span id="audioStatus">ON</span></span>
+                    <span>🔋 <span id="batteryLevel">78%</span></span>
+                </div>
+            </div>
+            <div class="magnet-base"></div>
+            <div class="audio-indicator" id="audioIndicator">🎵</div>
+
+            <!-- Exercise Selection Screen (Hidden by default) -->
+            <div class="exercise-list" id="exerciseList">
+                <div class="exercise-item selected">► Squats</div>
+                <div class="exercise-item">  Deadlifts</div>
+                <div class="exercise-item">  Bench Press</div>
+                <div class="exercise-item">  Bicep Curls</div>
+                <div class="exercise-item">  Overhead Press</div>
+                <div style="margin-top: 10px; text-align: center; font-size: 8px;">
+                    [A] Select [B] Back
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="controls">
+            <div class="control-section">
+                <h3>Display Screens</h3>
+                <div class="screen-selector">
+                    <button class="screen-btn active" onclick="showScreen('workout')">Workout</button>
+                    <button class="screen-btn" onclick="showScreen('menu')">Menu</button>
+                    <button class="screen-btn" onclick="showScreen('summary')">Summary</button>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>Exercise Simulation</h3>
+                <div class="button-group">
+                    <button class="btn" onclick="incrementRep()">Add Rep (+)</button>
+                    <button class="btn secondary" onclick="resetReps()">Reset</button>
+                </div>
+                <div class="button-group">
+                    <button class="btn secondary" onclick="changeExercise('SQUATS')">Squats</button>
+                    <button class="btn secondary" onclick="changeExercise('DEADLIFTS')">Deadlifts</button>
+                    <button class="btn secondary" onclick="changeExercise('BENCH PRESS')">Bench</button>
+                </div>
+            </div>
+
+            <div class="control-section">
+                <h3>Audio Settings</h3>
+                <div class="slider-container">
+                    <span>Volume:</span>
+                    <input type="range" class="slider" id="volumeSlider" min="0" max="100" value="75" onchange="updateVolume()">
+                    <span id="volumeDisplay">75%</span>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="audioToggle" onclick="toggleAudio()">🔊 ON</button>
+                    <button class="btn secondary" onclick="playFeedback()">Test Audio</button>
+                </div>
+            </div>
+
+            <div class="attachment-demo">
+                <h3>Magnetic Attachment Demo</h3>
+                <div class="weight-shapes">
+                    <div class="weight" onclick="attachTo('barbell')" title="Barbell">BAR</div>
+                    <div class="weight" onclick="attachTo('dumbbell')" title="Dumbbell">DB</div>
+                    <div class="kettlebell weight" onclick="attachTo('kettlebell')" title="Kettlebell"></div>
+                </div>
+                <div class="feedback-text" id="attachmentFeedback">
+                    Click weights above to test magnetic attachment
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentReps = 15;
+        let currentCombo = 15;
+        let currentExercise = 'SQUATS';
+        let audioEnabled = true;
+        let attachedTo = null;
+        let workoutStartTime = Date.now() - (2 * 60 + 34) * 1000; // 2:34 ago
+
+        // Update workout timer every second
+        setInterval(updateWorkoutTimer, 1000);
+
+        function updateWorkoutTimer() {
+            const elapsed = Math.floor((Date.now() - workoutStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('workoutTime').textContent =
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function showScreen(screen) {
+            // Update button states
+            document.querySelectorAll('.screen-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const mainDisplay = document.getElementById('mainDisplay');
+            const exerciseList = document.getElementById('exerciseList');
+
+            switch(screen) {
+                case 'workout':
+                    mainDisplay.style.display = 'flex';
+                    exerciseList.style.display = 'none';
+                    break;
+                case 'menu':
+                    mainDisplay.style.display = 'none';
+                    exerciseList.style.display = 'block';
+                    break;
+                case 'summary':
+                    showSummaryScreen();
+                    break;
+            }
+        }
+
+        function showSummaryScreen() {
+            const mainDisplay = document.getElementById('mainDisplay');
+            mainDisplay.innerHTML = `
+                <div class="exercise-name">WORKOUT COMPLETE</div>
+                <div style="font-size: 8px; margin: 8px 0;">
+                    <div>Squats:      20</div>
+                    <div>Deadlifts:   15</div>
+                    <div>Bench:       12</div>
+                </div>
+                <div style="font-size: 9px; margin: 5px 0;">
+                    <div>Total: 47 reps</div>
+                    <div>Time: 28:45</div>
+                    <div>Best Combo: 20</div>
+                </div>
+            `;
+        }
+
+        function incrementRep() {
+            currentReps++;
+            currentCombo++;
+            document.getElementById('repCounter').textContent = currentReps;
+            document.getElementById('comboCount').textContent = currentCombo;
+            updateProgressBar();
+
+            if (audioEnabled) {
+                playRepSound();
+            }
+        }
+
+        function resetReps() {
+            currentReps = 0;
+            currentCombo = 0;
+            document.getElementById('repCounter').textContent = currentReps;
+            document.getElementById('comboCount').textContent = currentCombo;
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const dots = document.querySelectorAll('.progress-dot');
+            const target = 20; // Target reps
+            const filled = Math.min(currentReps, target);
+
+            dots.forEach((dot, index) => {
+                if (index < filled) {
+                    dot.classList.add('filled');
+                } else {
+                    dot.classList.remove('filled');
+                }
+            });
+        }
+
+        function changeExercise(exercise) {
+            currentExercise = exercise;
+            document.getElementById('exerciseName').textContent = exercise;
+
+            // Reset for new exercise
+            resetReps();
+
+            // Simulate auto-detection feedback
+            if (audioEnabled && attachedTo) {
+                setTimeout(() => {
+                    alert(`🎵 Audio: "Detected ${exercise.toLowerCase()}. I'll count your reps!"`);
+                }, 500);
+            }
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const button = document.getElementById('audioToggle');
+            const status = document.getElementById('audioStatus');
+            const indicator = document.getElementById('audioIndicator');
+
+            if (audioEnabled) {
+                button.textContent = '🔊 ON';
+                status.textContent = 'ON';
+                indicator.style.display = 'flex';
+            } else {
+                button.textContent = '🔇 OFF';
+                status.textContent = 'OFF';
+                indicator.style.display = 'none';
+            }
+        }
+
+        function updateVolume() {
+            const volume = document.getElementById('volumeSlider').value;
+            document.getElementById('volumeDisplay').textContent = volume + '%';
+        }
+
+        function playFeedback() {
+            if (audioEnabled) {
+                alert('🎵 Audio: "Great form! Keep it up!"');
+            }
+        }
+
+        function playRepSound() {
+            // Simulate audio feedback
+            const repSounds = [
+                `${currentReps}...`,
+                `${currentReps}... Good form!`,
+                `${currentReps}... Perfect!`,
+                `Great depth! ${currentReps}!`
+            ];
+
+            setTimeout(() => {
+                if (audioEnabled) {
+                    console.log(`🎵 Audio: "${repSounds[Math.floor(Math.random() * repSounds.length)]}"`);
+                }
+            }, 200);
+        }
+
+        function attachTo(equipment) {
+            // Remove previous attachment
+            document.querySelectorAll('.weight').forEach(w => w.classList.remove('attached'));
+
+            // Add new attachment
+            event.target.classList.add('attached');
+            attachedTo = equipment;
+
+            const feedback = document.getElementById('attachmentFeedback');
+            feedback.innerHTML = `
+                ✅ Attached to ${equipment}!<br>
+                <small>Magnetic strength: Strong | Detection: Active</small>
+            `;
+
+            // Simulate attachment audio
+            if (audioEnabled) {
+                setTimeout(() => {
+                    alert(`🎵 Audio: "Device attached to ${equipment}. Ready for workout!"`);
+                }, 300);
+            }
+        }
+
+        // Exercise selection simulation
+        document.querySelectorAll('.exercise-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.exercise-item').forEach(i => i.classList.remove('selected'));
+                this.classList.add('selected');
+
+                // Extract exercise name and switch
+                const exerciseName = this.textContent.trim().replace('►', '').trim().toUpperCase();
+                changeExercise(exerciseName);
+
+                // Auto-return to workout screen
+                setTimeout(() => showScreen('workout'), 1000);
+            });
+        });
+
+        // Initialize
+        updateProgressBar();
+        updateWorkoutTimer();
+    </script>
+</body>
+</html>

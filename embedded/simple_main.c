@@ -227,7 +227,7 @@ static void render_header(void) {
         
         // Device name and battery
         char header_text[32];
-        snprintf(header_text, sizeof(header_text), "ComboCounter  %d%%", read_battery_level());
+        snprintf(header_text, sizeof(header_text), "Combo Chracker  %d%%", read_battery_level());
         
         CLAY_TEXT(CLAY_ID("HeaderText"), CLAY_STRING(header_text),
                  CLAY_TEXT_CONFIG(.textColor = {0, 0, 0, 1}, .fontSize = 10));

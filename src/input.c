@@ -1,6 +1,7 @@
 #include "input.h"
 #include "raylib.h"
 #include "ui.h"
+#include "core.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
@@ -113,6 +114,36 @@ void handle_click(Clay_ElementId elementId, Clay_PointerData pointerData, intptr
         ui->break_menu.visible = true;
         ui->tracker_form.form_visible = false;
         ui->interval_form.form_visible = false;
+    }
+    // Handle tracker buttons
+    else if (strncmp(id.chars, "tracker_increment_", 18) == 0) {
+        int tracker_index = atoi(id.chars + 18);
+        if (tracker_index >= 0 && tracker_index < ui->tracker_count) {
+            combo_increment(&ui->trackers[tracker_index], 1);
+            save_ui_state(ui);  // Save after increment
+            printf("Incremented tracker %d\n", tracker_index);
+        }
+    }
+    else if (strncmp(id.chars, "tracker_decrement_", 18) == 0) {
+        int tracker_index = atoi(id.chars + 18);
+        if (tracker_index >= 0 && tracker_index < ui->tracker_count) {
+            combo_decrement(&ui->trackers[tracker_index], 1);
+            save_ui_state(ui);  // Save after decrement
+            printf("Decremented tracker %d\n", tracker_index);
+        }
+    }
+    else if (strncmp(id.chars, "tracker_pause_", 14) == 0) {
+        int tracker_index = atoi(id.chars + 14);
+        if (tracker_index >= 0 && tracker_index < ui->tracker_count) {
+            if (ui->trackers[tracker_index].paused) {
+                combo_resume(&ui->trackers[tracker_index]);
+                printf("Resumed tracker %d\n", tracker_index);
+            } else {
+                combo_pause(&ui->trackers[tracker_index]);
+                printf("Paused tracker %d\n", tracker_index);
+            }
+            save_ui_state(ui);  // Save after pause/resume
+        }
     }
 }
 

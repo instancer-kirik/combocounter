@@ -100,4 +100,12 @@ void break_activity_init(BreakActivity* activity, const char* name, const char* 
 void break_menu_init(BreakMenu* menu);
 void break_menu_add_activity(BreakMenu* menu, const char* name, const char* description, int duration, bool is_quick_break);
 
+// Single tracker save/load functions
+void combo_save_state(ComboState* state, const char* file);
+void combo_load_state(ComboState* state, const char* file);
+
+// Multi-tracker save/load functions
+void combo_save_all_trackers(ComboState* trackers, int tracker_count, const char* file);
+int combo_load_all_trackers(ComboState* trackers, int max_trackers, const char* file);
+
 #endif // CORE_H

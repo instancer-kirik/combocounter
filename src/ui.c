@@ -153,6 +153,9 @@ void add_new_tracker(ComboUI* ui) {
     ui->tracker_form.error_visible = false;
     ui->tracker_form.error_message = NULL;
     memset(ui->tracker_form.label_buffer, 0, MAX_LABEL_LENGTH);
+
+    // Save UI state after adding tracker
+    save_ui_state(ui);
 }
 
 void add_new_interval(ComboUI* ui) {
@@ -187,4 +190,17 @@ void add_new_interval(ComboUI* ui) {
     memset(ui->interval_form.label_buffer, 0, MAX_LABEL_LENGTH);
     memset(ui->interval_form.duration_buffer, 0, 16);
     memset(ui->interval_form.reps_buffer, 0, 8);
-} 
+
+    // Save UI state after adding interval
+    save_ui_state(ui);
+}
+
+void save_ui_state(ComboUI* ui) {
+    if (ui->tracker_count > 0) {
+        combo_save_all_trackers(ui->trackers, ui->tracker_count, "combo_trackers.dat");
+    }
+}
+
+void load_ui_state(ComboUI* ui) {
+    ui->tracker_count = combo_load_all_trackers(ui->trackers, MAX_TRACKERS, "combo_trackers.dat");
+}

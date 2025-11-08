@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(combo_counter C)
+project(combo_chracker C)
 set(CMAKE_C_STANDARD 99)
 
 # Adding Raylib
@@ -30,7 +30,7 @@ if(NOT clay_POPULATED)
 endif()
 
 # Add source files
-set(SOURCES 
+set(SOURCES
     src/main.c
     src/core.c
     src/break_menu.c
@@ -46,11 +46,11 @@ set(SOURCES
 )
 
 # Main executable
-add_executable(combo_counter ${SOURCES})
+add_executable(combo_chracker ${SOURCES})
 
 # Compiler options
-target_compile_options(combo_counter PUBLIC)
-target_include_directories(combo_counter PUBLIC 
+target_compile_options(combo_chracker PUBLIC)
+target_include_directories(combo_chracker PUBLIC
     .
     ${clay_SOURCE_DIR}
     ${clay_SOURCE_DIR}/renderers/raylib
@@ -58,10 +58,10 @@ target_include_directories(combo_counter PUBLIC
 )
 
 # Link libraries
-target_link_libraries(combo_counter PUBLIC raylib)
+target_link_libraries(combo_chracker PUBLIC raylib)
 
 if(UNIX)
-    target_link_libraries(combo_counter PUBLIC m)
+    target_link_libraries(combo_chracker PUBLIC m)
 endif()
 
 # Compiler flags
@@ -73,7 +73,7 @@ endif()
 
 # Create resources directory if it doesn't exist
 add_custom_command(
-    TARGET combo_counter PRE_BUILD
+    TARGET combo_chracker PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory
     ${CMAKE_CURRENT_BINARY_DIR}/resources
 )
@@ -81,7 +81,7 @@ add_custom_command(
 # Copy resources if they exist
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/resources)
     add_custom_command(
-        TARGET combo_counter POST_BUILD
+        TARGET combo_chracker POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_CURRENT_SOURCE_DIR}/resources
         ${CMAKE_CURRENT_BINARY_DIR}/resources

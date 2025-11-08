@@ -61,7 +61,7 @@
 
 // BLE configuration
 #define DEVICE_NAME                     "FitnessTracker"
-#define MANUFACTURER_NAME               "ComboCounter"
+#define MANUFACTURER_NAME               "Combo Chracker"
 #define APP_BLE_OBSERVER_PRIO           3
 #define APP_BLE_CONN_CFG_TAG            1
 

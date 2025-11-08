@@ -279,7 +279,7 @@ static void render_display(void) {
     clear_screen();
     
     printf("╭─────────────────────────────────────────────────────────────╮\n");
-    printf("│                    ComboCounter Simulation                  │\n");
+    printf("│                    Combo Chracker Simulation               │\n");
     printf("╰─────────────────────────────────────────────────────────────╯\n\n");
     
     switch (g_current_screen) {
@@ -455,7 +455,7 @@ static void load_data(void) {
 
 // Main function
 int main(void) {
-    printf("ComboCounter Embedded Simulation\n");
+    printf("Combo Chracker Embedded Simulation\n");
     printf("=================================\n\n");
     
     // Setup signal handler for clean exit
@@ -470,7 +470,7 @@ int main(void) {
     g_last_interaction = time(NULL);
     g_last_display_update = time(NULL);
     
-    printf("[INFO] ComboCounter simulation started\n");
+    printf("[INFO] Combo Chracker simulation started\n");
     printf("[INFO] Press Q to quit, H for settings, I for stats\n\n");
     
     // Main loop
@@ -498,6 +498,6 @@ int main(void) {
     // Save data before exit
     save_data();
     
-    printf("\n[INFO] ComboCounter simulation ended\n");
+    printf("\n[INFO] Combo Chracker simulation ended\n");
     return 0;
 }

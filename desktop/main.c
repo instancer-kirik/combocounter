@@ -9,7 +9,6 @@
 #include <SDL2/SDL.h>
 
 // Clay UI
-#define CLAY_IMPLEMENTATION
 #include "../src/clay.h"
 
 // Combo counter core (using embedded version)
@@ -116,14 +115,14 @@ static void render_counter_screen(void) {
     Counter* current = device_get_current_counter(&g_combo_device);
     
     if (!current) {
-        CLAY_TEXT(CLAY_ID("NoCounters"), CLAY_STRING("No counters configured"),
-                 CLAY_TEXT_CONFIG(.textColor = {0, 0, 0, 1}, .fontSize = 16));
+        CLAY_TEXT(CLAY_STRING("No counters configured"),
+                 CLAY_TEXT_CONFIG({.textColor = {0, 0, 0, 1}, .fontSize = 16}));
         return;
     }
     
     CLAY(CLAY_ID("CounterScreen"), 
-         CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_GROW()},
-                     .layoutDirection = CLAY_TOP_TO_BOTTOM, .padding = {16, 16})) {
+         CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_GROW()},
+                     .layoutDirection = CLAY_TOP_TO_BOTTOM, .padding = {16, 16}})) {
         
         // Counter navigation indicator
         if (g_combo_device.counter_count > 1) {
@@ -132,22 +131,22 @@ static void render_counter_screen(void) {
                     g_combo_device.current_counter + 1, g_combo_device.counter_count);
             
             CLAY(CLAY_ID("NavContainer"),
-                 CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(20)},
-                             .childAlignment = {CLAY_ALIGN_X_CENTER, CLAY_ALIGN_Y_CENTER})) {
-                CLAY_TEXT(CLAY_ID("NavText"), CLAY_STRING(nav_text),
-                         CLAY_TEXT_CONFIG(.textColor = {0.5f, 0.5f, 0.5f, 1}, .fontSize = 12));
+                 CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(20)},
+                             .childAlignment = {CLAY_ALIGN_X_CENTER, CLAY_ALIGN_Y_CENTER}})) {
+                CLAY_TEXT(CLAY_STRING(nav_text),
+                         CLAY_TEXT_CONFIG({.textColor = {0.5f, 0.5f, 0.5f, 1}, .fontSize = 12}));
             }
         }
         
         // Counter display
         CLAY(CLAY_ID("CounterDisplay"),
-             CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_GROW()},
+             CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_GROW()},
                          .childAlignment = {CLAY_ALIGN_X_CENTER, CLAY_ALIGN_Y_CENTER},
-                         .layoutDirection = CLAY_TOP_TO_BOTTOM, .childGap = 8)) {
+                         .layoutDirection = CLAY_TOP_TO_BOTTOM, .childGap = 8})) {
             
             // Counter label
-            CLAY_TEXT(CLAY_ID("CounterLabel"), CLAY_STRING(current->label),
-                     CLAY_TEXT_CONFIG(.textColor = {0, 0, 0, 1}, .fontSize = 18));
+            CLAY_TEXT(CLAY_STRING(current->name),
+                     CLAY_TEXT_CONFIG({.textColor = {0, 0, 0, 1}, .fontSize = 20}));
             
             // Main count display
             char count_text[32];
@@ -158,16 +157,16 @@ static void render_counter_screen(void) {
                 count_color = (Clay_Color){0.8f, 0.2f, 0.0f, 1}; // Red for combo
             }
             
-            CLAY_TEXT(CLAY_ID("CountDisplay"), CLAY_STRING(count_text),
-                     CLAY_TEXT_CONFIG(.textColor = count_color, .fontSize = 36));
+            CLAY_TEXT(CLAY_STRING(count_text),
+                     CLAY_TEXT_CONFIG({.textColor = count_color, .fontSize = 36}));
             
             // Multiplier display for combo types
             if (current->type == COUNTER_TYPE_COMBO || current->type == COUNTER_TYPE_TIMED) {
                 char mult_text[16];
                 snprintf(mult_text, sizeof(mult_text), "Multiplier: %.1fx", current->multiplier);
                 
-                CLAY_TEXT(CLAY_ID("MultDisplay"), CLAY_STRING(mult_text),
-                         CLAY_TEXT_CONFIG(.textColor = {0.6f, 0.3f, 0.0f, 1}, .fontSize = 14));
+                CLAY_TEXT(CLAY_STRING(mult_text),
+                         CLAY_TEXT_CONFIG({.textColor = {0.6f, 0.3f, 0.0f, 1}, .fontSize = 14}));
             }
             
             // Total/max display
@@ -179,14 +178,14 @@ static void render_counter_screen(void) {
                 snprintf(total_text, sizeof(total_text), "Total: %ld", current->total);
             }
             
-            CLAY_TEXT(CLAY_ID("TotalDisplay"), CLAY_STRING(total_text),
-                     CLAY_TEXT_CONFIG(.textColor = {0.5f, 0.5f, 0.5f, 1}, .fontSize = 12));
+            CLAY_TEXT(CLAY_STRING(total_text),
+                     CLAY_TEXT_CONFIG({.textColor = {0, 0, 0, 1}, .fontSize = 16}));
         }
         
         // Quality indicator
         CLAY(CLAY_ID("QualityIndicator"),
-             CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(30)},
-                         .childAlignment = {CLAY_ALIGN_X_CENTER, CLAY_ALIGN_Y_CENTER})) {
+             CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(40)},
+                         .childAlignment = {CLAY_ALIGN_X_CENTER, CLAY_ALIGN_Y_CENTER}})) {
             
             const char* quality_names[] = {"Miss", "Partial", "Good", "Perfect"};
             const char* quality_name = quality_names[g_current_quality];
@@ -201,28 +200,27 @@ static void render_counter_screen(void) {
             char quality_text[32];
             snprintf(quality_text, sizeof(quality_text), "Quality: %s", quality_name);
             
-            CLAY_TEXT(CLAY_ID("QualityText"), CLAY_STRING(quality_text),
-                     CLAY_TEXT_CONFIG(.textColor = quality_colors[g_current_quality], .fontSize = 14));
+            CLAY_TEXT(CLAY_STRING(quality_text),
+                     CLAY_TEXT_CONFIG({.textColor = quality_colors[g_current_quality], .fontSize = 14}));
         }
         
         // Instructions
         CLAY(CLAY_ID("Instructions"),
-             CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(60)},
-                         .padding = {8, 8})) {
-            CLAY_TEXT(CLAY_ID("InstrText"), 
-                     CLAY_STRING("SPACE: Increment | X: Decrement\nA/D: Navigate | Q/E: Quality\nS: Settings | ESC: Quit"),
-                     CLAY_TEXT_CONFIG(.textColor = {0.3f, 0.3f, 0.3f, 1}, .fontSize = 10));
+             CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(60)},
+                         .padding = {8, 8}})) {
+            CLAY_TEXT(CLAY_STRING("SPACE: Increment | X: Decrement\nA/D: Navigate | Q/E: Quality\nS: Settings | ESC: Quit"),
+                     CLAY_TEXT_CONFIG({.textColor = {0.3f, 0.3f, 0.3f, 1}, .fontSize = 10}));
         }
     }
 }
 
 static void render_settings_screen(void) {
     CLAY(CLAY_ID("SettingsScreen"),
-         CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_GROW()},
-                     .layoutDirection = CLAY_TOP_TO_BOTTOM, .padding = {16, 16})) {
+         CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_GROW()},
+                     .layoutDirection = CLAY_TOP_TO_BOTTOM, .padding = {16, 16}})) {
         
-        CLAY_TEXT(CLAY_ID("SettingsTitle"), CLAY_STRING("Settings"),
-                 CLAY_TEXT_CONFIG(.textColor = {0, 0, 0, 1}, .fontSize = 20));
+        CLAY_TEXT(CLAY_STRING("Settings"),
+                 CLAY_TEXT_CONFIG({.textColor = {0, 0, 0, 1}, .fontSize = 20}));
         
         // Settings options
         const char* settings[] = {
@@ -240,21 +238,20 @@ static void render_settings_screen(void) {
             Clay_Color bg_color = (i == g_settings_selection) ?
                 (Clay_Color){0.8f, 0.8f, 0.8f, 1} : (Clay_Color){1.0f, 1.0f, 1.0f, 1};
             
-            CLAY(CLAY_IDI("SettingItem", i),
-                 CLAY_RECTANGLE(.color = bg_color),
-                 CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(24)},
-                             .padding = {8, 4})) {
-                CLAY_TEXT(CLAY_IDI("SettingText", i), CLAY_STRING(settings[i]),
-                         CLAY_TEXT_CONFIG(.textColor = {0, 0, 0, 1}, .fontSize = 12));
+            CLAY(CLAY_ID("SettingItem"),
+                 CLAY_RECTANGLE({.color = bg_color}),
+                 CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(24)},
+                             .padding = {8, 4}})) {
+                CLAY_TEXT(CLAY_STRING(settings[i]),
+                         CLAY_TEXT_CONFIG({.textColor = {0, 0, 0, 1}, .fontSize = 12}));
             }
         }
         
         CLAY(CLAY_ID("SettingsInstr"),
-             CLAY_LAYOUT(.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(40)},
-                         .padding = {8, 8})) {
-            CLAY_TEXT(CLAY_ID("SettingsInstrText"), 
-                     CLAY_STRING("W/S: Navigate | SPACE: Select | ESC: Back"),
-                     CLAY_TEXT_CONFIG(.textColor = {0.3f, 0.3f, 0.3f, 1}, .fontSize = 10));
+             CLAY_LAYOUT({.sizing = {CLAY_SIZING_GROW(), CLAY_SIZING_FIXED(40)},
+                         .padding = {8, 8}})) {
+            CLAY_TEXT(CLAY_STRING("W/S: Navigate | SPACE: Select | ESC: Back"),
+                     CLAY_TEXT_CONFIG({.textColor = {0.3f, 0.3f, 0.3f, 1}, .fontSize = 10}));
         }
     }
 }
@@ -308,7 +305,7 @@ static void handle_settings_selection(void) {
 }
 
 int main(int argc, char* argv[]) {
-    printf("ComboCounter Desktop - Development Version\n");
+    printf("Combo Chracker Desktop - Development Version\n");
     printf("=========================================\n");
     
     if (!init_sdl()) {
@@ -364,7 +361,7 @@ static bool init_sdl(void) {
         return false;
     }
     
-    g_window = SDL_CreateWindow("ComboCounter Desktop",
+    g_window = SDL_CreateWindow("Combo Chracker Desktop",
                                SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                WINDOW_WIDTH, WINDOW_HEIGHT,
                                SDL_WINDOW_SHOWN);

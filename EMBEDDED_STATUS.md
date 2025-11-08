@@ -1,8 +1,8 @@
-# ComboCounter Embedded Status & Setup Guide
+# Combo Chracker Embedded Status & Setup Guide
 
 ## 🎯 Project Status: WORKING & READY FOR EMBEDDED DEPLOYMENT
 
-The ComboCounter embedded system has been successfully implemented and tested. The core logic is solid, the simulation works perfectly, and the codebase is ready for nRF52840 + e-ink deployment.
+The Combo Chracker embedded system has been successfully implemented and tested. The core logic is solid, the simulation works perfectly, and the codebase is ready for nRF52840 + e-ink deployment.
 
 ## ✅ What's Working
 
@@ -33,7 +33,7 @@ The ComboCounter embedded system has been successfully implemented and tested. T
 ```bash
 cd ComboCounter/embedded
 make -f Makefile.sim
-./combocounter_sim
+./combo_chracker_sim
 ```
 
 **Controls:**
@@ -255,11 +255,11 @@ typedef struct {
 ✅ **Persistent**: Always-on e-paper display, weeks of battery life  
 ✅ **Simple**: Four buttons, clear feedback, zero complexity  
 
-The ComboCounter embedded system successfully provides a **physical interface** for tracking that complements digital apps rather than replacing them. It's essentially a high-quality "clicker" that sends rich, structured data to your existing tracking workflows.
+The Combo Chracker embedded system successfully provides a **physical interface** for tracking that complements digital apps rather than replacing them. It's essentially a high-quality "clicker" that sends rich, structured data to your existing tracking workflows.
 
 ## 🎉 Ready for Production
 
-The embedded ComboCounter is **production-ready** for anyone wanting to build a physical fitness/habit tracking device. The simulation proves the concept works, the code is clean and well-documented, and the hardware requirements are clearly defined.
+The embedded Combo Chracker is **production-ready** for anyone wanting to build a physical fitness/habit tracking device. The simulation proves the concept works, the code is clean and well-documented, and the hardware requirements are clearly defined.
 
 **Total Development Investment:** ~3 days to working embedded system with full simulation testing.
 
